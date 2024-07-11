@@ -7,18 +7,16 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.print("$ ");
-
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
 
-        /*for(String command : validCommands){
-            if(input.equals(command)){
-                System.out.println("Command found!");
+        while(true){
+            System.out.print("$ ");
+            String input = scanner.nextLine();
+
+            if(input != null){
+                System.out.println(input + ": command not found");
             }
-        }*/
-        System.out.println(input + ": command not found");
-
-
+        }
     }
+
 }
