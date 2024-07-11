@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Main {
 
    /* static String[] validCommands = {"cd", "echo"};
+      int number = 18;
     static String invalidCommandMessage = ": command not found";*/
 
     public static void main(String[] args) throws Exception {
