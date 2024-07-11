@@ -2,8 +2,8 @@ import java.util.Scanner;
 
 public class Main {
 
-    static String[] validCommands = {"cd", "echo"};
-    static String invalidCommandMessage = ": command not found";
+   /* static String[] validCommands = {"cd", "echo"};
+    static String invalidCommandMessage = ": command not found";*/
 
     public static void main(String[] args) throws Exception {
 
@@ -12,12 +12,12 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 
-        for(String command : validCommands){
+        /*for(String command : validCommands){
             if(input.equals(command)){
                 System.out.println("Command found!");
             }
-        }
-        System.out.printf("%s%s", input, invalidCommandMessage);
+        }*/
+        System.out.printf(input + ": command not found");
 
     }
 }
