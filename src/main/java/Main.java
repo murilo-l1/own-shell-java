@@ -13,12 +13,28 @@ public class Main {
             System.out.print("$ ");
             String input = scanner.nextLine();
 
-            if(input.equals("exit 0")){
-                System.exit(0);
-            }else{
+            if(input.startsWith("exit")){
+                exit(input);
+            }
+            else if(input.startsWith("echo")){
+                echo(input);
+            }
+            else{
                 System.out.println(input + ": command not found");
             }
         }
     }
+
+    private static void echo(String command){
+        String textBack = command.replace("echo ", "").trim();
+        System.out.println(textBack);
+    }
+
+    private static void exit(String command){
+        command = command.replace("exit ", "").trim();
+        int code = Integer.parseInt(command);
+        System.exit(code);
+    }
+
 
 }
