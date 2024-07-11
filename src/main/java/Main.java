@@ -2,9 +2,8 @@ import java.util.Scanner;
 
 public class Main {
 
-   /* static String[] validCommands = {"cd", "echo"};
-      int number = 18;
-    static String invalidCommandMessage = ": command not found";*/
+    static String[] validCommands = {"exit 0"};
+
 
     public static void main(String[] args) throws Exception {
 
@@ -14,7 +13,9 @@ public class Main {
             System.out.print("$ ");
             String input = scanner.nextLine();
 
-            if(input != null){
+            if(input.equals("exit 0")){
+                System.exit(0);
+            }else{
                 System.out.println(input + ": command not found");
             }
         }
