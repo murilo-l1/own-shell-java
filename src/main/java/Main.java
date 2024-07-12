@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    static String[] validCommands = {"exit 0"};
+    static String[] validCommands = {"exit", "echo", "type", "cat"};
 
 
     public static void main(String[] args) throws Exception {
@@ -18,6 +18,9 @@ public class Main {
             }
             else if(input.startsWith("echo")){
                 echo(input);
+            }
+            else if(input.startsWith("type")){
+                type(input);
             }
             else{
                 System.out.println(input + ": command not found");
@@ -36,5 +39,20 @@ public class Main {
         System.exit(code);
     }
 
+    private static void type(String input){
+        String extractedCommand = input.replace("type ", "").trim();
+        boolean isValid = false;
+
+        for(String validCommand : validCommands){
+            if(validCommand.equals(extractedCommand)){
+                isValid = true;
+            }
+        }
+        if(isValid){
+            System.out.println(extractedCommand + " is a shell builtin");
+        }else{
+            System.out.println(extractedCommand + ": not found");
+        }
+    }
 
 }
