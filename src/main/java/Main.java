@@ -21,7 +21,11 @@ public class Main {
                 echo(input);
             }
             else if(input.startsWith("type")){
-                type(input);
+                String[] paths = System.getenv("PATH").split(":");
+                for(String path: paths){
+                    System.out.println("path = " + path);
+                }
+                //type(input);
             }
             else{
                 System.out.println(input + ": command not found");
@@ -45,6 +49,7 @@ public class Main {
         boolean isValidCommand = false;
 
         // getting directories from env variable 'Path'
+        //String path = getPath(input);
         String[] paths = System.getenv("PATH").split(":");
         String localPath = "";
 
@@ -60,6 +65,19 @@ public class Main {
         else
             System.out.println(extractedCommand + ": not found");
 
+    }
+
+    private static String getPath(String parameter){
+        String[] paths = System.getenv("PATH").split(":");
+        debugPaths(paths);
+        return null;
+
+    }
+
+    private static void debugPaths(String[] p){
+        for (String s : p){
+            System.out.println("path = " + s);
+        }
     }
 
 }
