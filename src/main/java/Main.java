@@ -19,11 +19,9 @@ public class Main {
                 exit(input);
             }
             else if(input.startsWith("echo")){
-                System.out.println(input);
                 echo(input);
             }
             else if(input.startsWith("type")){
-                System.out.println(input);
                 type(input);
             }
             else{
