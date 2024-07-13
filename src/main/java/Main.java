@@ -19,9 +19,11 @@ public class Main {
                 exit(input);
             }
             else if(input.startsWith("echo")){
+                System.out.println(input);
                 echo(input);
             }
             else if(input.startsWith("type")){
+                System.out.println(input);
                 type(input);
             }
             else{
@@ -52,16 +54,15 @@ public class Main {
                 isValidCommand = true;
                 break;
             }
-
         }
 
         if(localPath != null)
             hasValidPath = true;
 
 
-        if(isValidCommand && !hasValidPath)
+        if(isValidCommand)
             System.out.println(extractedCommand + " is a shell builtin");
-        else if (!isValidCommand && hasValidPath)
+        else if (hasValidPath)
             System.out.println(extractedCommand + " is " + localPath);
         else
             System.out.println(extractedCommand + ": not found");
