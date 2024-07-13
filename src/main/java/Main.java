@@ -1,9 +1,10 @@
+import java.nio.file.Path;
 import java.util.Scanner;
+
 
 public class Main {
 
     static String[] validCommands = {"exit", "echo", "type", "cat"};
-
 
     public static void main(String[] args) throws Exception {
 
@@ -41,18 +42,24 @@ public class Main {
 
     private static void type(String input){
         String extractedCommand = input.replace("type ", "").trim();
-        boolean isValid = false;
+        boolean isValidCommand = false;
 
-        for(String validCommand : validCommands){
-            if(validCommand.equals(extractedCommand)){
-                isValid = true;
+        // getting directories from env variable 'Path'
+        String[] paths = System.getenv("PATH").split(":");
+        String localPath = "";
+
+        for(String path : paths){
+            if(path.endsWith(extractedCommand)){
+                localPath = path;
+                isValidCommand = true;
             }
         }
-        if(isValid){
-            System.out.println(extractedCommand + " is a shell builtin");
-        }else{
+
+        if(isValidCommand)
+            System.out.println(extractedCommand + " is " + localPath);
+        else
             System.out.println(extractedCommand + ": not found");
-        }
+
     }
 
 }
