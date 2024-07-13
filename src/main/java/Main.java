@@ -1,10 +1,11 @@
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Scanner;
 
 
 public class Main {
 
-    static String[] validCommands = {"exit", "echo", "type", "cat"};
+    static String[] validCommands = {"exit", "echo", "type"};
 
     public static void main(String[] args) throws Exception {
 
@@ -21,11 +22,7 @@ public class Main {
                 echo(input);
             }
             else if(input.startsWith("type")){
-                String[] paths = System.getenv("PATH").split(":");
-                for(String path: paths){
-                    System.out.println("path = " + path);
-                }
-                //type(input);
+                type(input);
             }
             else{
                 System.out.println(input + ": command not found");
@@ -46,38 +43,43 @@ public class Main {
 
     private static void type(String input){
         String extractedCommand = input.replace("type ", "").trim();
+        String localPath = extractPath(extractedCommand);
         boolean isValidCommand = false;
+        boolean hasValidPath = false;
 
-        // getting directories from env variable 'Path'
-        //String path = getPath(input);
-        String[] paths = System.getenv("PATH").split(":");
-        String localPath = "";
-
-        for(String path : paths){
-            if(path.endsWith(extractedCommand)){
-                localPath = path;
+        for(String command : validCommands){
+            if (extractedCommand.equals(command)) {
                 isValidCommand = true;
+                break;
             }
+
         }
 
-        if(isValidCommand)
+        if(localPath != null)
+            hasValidPath = true;
+
+
+        if(isValidCommand && !hasValidPath)
+            System.out.println(extractedCommand + " is a shell builtin");
+        else if (!isValidCommand && hasValidPath)
             System.out.println(extractedCommand + " is " + localPath);
         else
             System.out.println(extractedCommand + ": not found");
 
     }
 
-    private static String getPath(String parameter){
+    // get directories from 'Path' env variables
+    private static String extractPath(String parameter){
         String[] paths = System.getenv("PATH").split(":");
-        debugPaths(paths);
-        return null;
-
-    }
-
-    private static void debugPaths(String[] p){
-        for (String s : p){
-            System.out.println("path = " + s);
+        for(String path : paths){
+            Path fullPath = Path.of(path, parameter);
+            if(Files.isRegularFile(fullPath)){
+                return fullPath.toString();
+            }
         }
+        return null;
     }
+
+
 
 }
