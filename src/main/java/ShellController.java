@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class ShellController {
 
-    private String[] validCommands = {"exit", "echo", "type"};
+    private String[] validCommands = {"exit", "echo", "type", "pwd"};
 
     public void echo(String command){
         String textBack = command.replace("echo ", "").trim();
