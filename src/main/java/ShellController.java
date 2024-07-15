@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Properties;
 
 public class ShellController {
 
@@ -43,12 +44,14 @@ public class ShellController {
         return false;
     }
 
+    //TODO: refatorar para ser win ou linux
     // get directories from 'Path' env variables
-    public String extractPath(String parameter){
+    public String extractPath(String input){
+        String command = input.split(" ")[0].trim();
         //splitting by ':', unix-like systems
         String[] paths = System.getenv("PATH").split(":");
         for(String path : paths){
-            Path fullPath = Path.of(path, parameter);
+            Path fullPath = Path.of(path, command);
             if(Files.isRegularFile(fullPath)){
                 return fullPath.toString();
             }
@@ -56,14 +59,15 @@ public class ShellController {
         return null;
     }
 
+    // when given a file that can be executed, execute with the parameter passed
     public void execute(String input){
         // get command to be found on env variables
-        String command = input.split(" ")[0];
-        String path = extractPath(command);
+        String path = extractPath(input);
 
         if(path != null){
             String[] commandWithArgs = input.split(" ");
             try{
+                // building a process with the valid args and showing on default output
                 ProcessBuilder builder = new ProcessBuilder(commandWithArgs);
                 Process process = builder.start();
                 process.getInputStream().transferTo(System.out);
@@ -71,8 +75,16 @@ public class ShellController {
                 ioe.printStackTrace();
             }
         }else{
+            String command = input.split(" ")[0];
             System.out.println(command + ": command not found");
         }
+    }
+
+    // a command to show the current directory for the user
+    public void pwd(){
+        String workingDirectory = System.getProperty("user.dir");
+        Path currentPath = Path.of(workingDirectory);
+        System.out.println(currentPath.toAbsolutePath());
     }
 
 }

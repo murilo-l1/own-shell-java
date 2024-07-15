@@ -20,9 +20,11 @@ public class ShellRunner {
             else if(input.startsWith("type")){
                 controller.type(input);
             }
+            else if(input.equals("pwd")){
+                controller.pwd();
+            }
             else{
-                String command = input.split(" ")[0].trim();
-                if(controller.extractPath(command) != null){
+                if(controller.extractPath(input) != null){
                    controller.execute(input);
                 }else{
                     System.out.println(input + ": command not found");
