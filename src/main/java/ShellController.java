@@ -50,8 +50,10 @@ public class ShellController {
     // get directories from 'Path' env variables
     public String extractPath(String input){
         String command = input.split(" ")[0].trim();
-        //splitting by ':', unix-like systems
-        String[] paths = System.getenv("PATH").split(":");
+
+        String separator = getCorrectSeparator();
+        String[] paths = System.getenv("PATH").split(separator);
+
         for(String path : paths){
             Path fullPath = Path.of(path, command);
             if(Files.isRegularFile(fullPath)){
@@ -59,6 +61,14 @@ public class ShellController {
             }
         }
         return null;
+    }
+
+    //splitting by ':' - unix-like systems, ';' - Windows systems
+    private String getCorrectSeparator(){
+        String systemOS = System.getProperty("os.name").toLowerCase();
+        return systemOS.contains("win")
+                ? ";"
+                : ":";
     }
 
     // when given a file that can be executed, execute with the parameter passed
@@ -82,24 +92,25 @@ public class ShellController {
         }
     }
 
-    // a command to show the current directory for the user
+    // print working directory
     public void pwd(){
         System.out.println(this.currentDirectory);
     }
 
+    // change directory
     public void cd(String input){
         //considering an abs path being passed
         String pathReceived = input.split(" ")[1].trim();
 
-        // crates a new path from the current and the one passed
-        File checkDir = new File(currentDirectory, pathReceived);
+        // crates a new path from the path received
+        Path formattedPath = Path.of(pathReceived);
 
-
-        if(checkDir.isDirectory()){
-            // update the current directory of the controller
-            currentDirectory = checkDir.getAbsolutePath();
+        // if is not a directory log the error
+        if(!Files.isDirectory(formattedPath)){
+            System.out.print("cd: " + pathReceived + ": No such file or directory\n");
         }else{
-            System.out.println("cd: " + pathReceived + ": No such file or directory");
+            // update the current directory of the controller
+            currentDirectory = formattedPath.toString();
         }
 
     }
