@@ -23,6 +23,9 @@ public class ShellRunner {
             else if(input.equals("pwd")){
                 controller.pwd();
             }
+            else if(input.startsWith("cd")){
+                controller.cd(input);
+            }
             else{
                 if(controller.extractPath(input) != null){
                    controller.execute(input);

@@ -1,11 +1,13 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
+
 
 public class ShellController {
 
-    private String[] validCommands = {"exit", "echo", "type", "pwd"};
+    private String currentDirectory = System.getProperty("user.dir");
+    private String[] validCommands = {"exit", "echo", "type", "pwd", "cd"};
 
     public void echo(String command){
         String textBack = command.replace("echo ", "").trim();
@@ -82,9 +84,24 @@ public class ShellController {
 
     // a command to show the current directory for the user
     public void pwd(){
-        String workingDirectory = System.getProperty("user.dir");
-        Path currentPath = Path.of(workingDirectory);
-        System.out.println(currentPath.toAbsolutePath());
+        System.out.println(this.currentDirectory);
+    }
+
+    public void cd(String input){
+        //considering an abs path being passed
+        String pathReceived = input.split(" ")[1].trim();
+
+        // crates a new path from the current and the one passed
+        File checkDir = new File(currentDirectory, pathReceived);
+
+
+        if(checkDir.isDirectory()){
+            // update the current directory of the controller
+            currentDirectory = checkDir.getAbsolutePath();
+        }else{
+            System.out.println("cd: " + pathReceived + ": No such file or directory");
+        }
+
     }
 
 }
