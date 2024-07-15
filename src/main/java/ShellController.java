@@ -35,18 +35,16 @@ public class ShellController {
     }
 
     private boolean isValidCommand(String extractedCommand) {
-        boolean isValidCommand = false;
         for(String command : this.validCommands){
             if (extractedCommand.equals(command)) {
-                isValidCommand = true;
-                break;
+                return true;
             }
         }
-        return isValidCommand;
+        return false;
     }
 
     // get directories from 'Path' env variables
-    private String extractPath(String parameter){
+    public String extractPath(String parameter){
         //splitting by ':', unix-like systems
         String[] paths = System.getenv("PATH").split(":");
         for(String path : paths){
@@ -58,29 +56,23 @@ public class ShellController {
         return null;
     }
 
-    //iterate over env variables and check if is exec
-    public String findExecutablePath(String input){
+    public void execute(String input){
+        // get command to be found on env variables
         String command = input.split(" ")[0];
-        String[] paths = System.getenv("PATH").split(":");
+        String path = extractPath(command);
 
-        for(String path : paths){
-            Path fullPath = Path.of(path, command);
-            if(Files.isExecutable(fullPath)){
-                return fullPath.toString();
+        if(path != null){
+            String[] commandWithArgs = input.split(" ");
+            try{
+                ProcessBuilder builder = new ProcessBuilder(commandWithArgs);
+                Process process = builder.start();
+                process.getInputStream().transferTo(System.out);
+            }catch (IOException ioe){
+                ioe.printStackTrace();
             }
+        }else{
+            System.out.println(command + ": command not found");
         }
-        return null;
-    }
-
-    public void execute(String input) {
-        String fullPath = findExecutablePath(input);
-        try{
-            Process p = Runtime.getRuntime().exec(fullPath.split(" "));
-            p.getInputStream().transferTo(System.out);
-        }catch (IOException ioe){
-            ioe.printStackTrace();
-        }
-
     }
 
 }

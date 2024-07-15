@@ -21,7 +21,8 @@ public class ShellRunner {
                 controller.type(input);
             }
             else{
-                if(controller.findExecutablePath(input) != null){
+                String command = input.split(" ")[0].trim();
+                if(controller.extractPath(command) != null){
                    controller.execute(input);
                 }else{
                     System.out.println(input + ": command not found");
