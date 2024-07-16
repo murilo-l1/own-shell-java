@@ -107,7 +107,7 @@ public class ShellController {
 
         // dealing with 'cd ~' to switch to home directory
         if (pathReceived.equals("~")) {
-            pathReceived = System.getProperty("user.home");
+            pathReceived = System.getenv("HOME");
         }
 
         // crates a new path from the path received
