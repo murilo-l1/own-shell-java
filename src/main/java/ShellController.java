@@ -1,13 +1,13 @@
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 
+
 public class ShellController {
 
+    private final String[] validCommands = {"exit", "echo", "type", "pwd", "cd"};
     private String currentDirectory = System.getProperty("user.dir");
-    private String[] validCommands = {"exit", "echo", "type", "pwd", "cd"};
 
     public void echo(String command){
         String textBack = command.replace("echo ", "").trim();
@@ -16,7 +16,13 @@ public class ShellController {
 
     public void exit(String command){
         command = command.replace("exit ", "").trim();
-        int code = Integer.parseInt(command);
+        int code = 0;
+        try{
+            code = Integer.parseInt(command);
+        }
+        catch (Exception e){
+            System.exit(0);
+        }
         System.exit(code);
     }
 
@@ -46,12 +52,10 @@ public class ShellController {
         return false;
     }
 
-    //TODO: refatorar para ser win ou linux
-    // get directories from 'Path' env variables
     public String extractPath(String input){
         String command = input.split(" ")[0].trim();
 
-        String separator = getCorrectSeparator();
+        String separator = getSystemSeparator();
         String[] paths = System.getenv("PATH").split(separator);
 
         for(String path : paths){
@@ -64,7 +68,7 @@ public class ShellController {
     }
 
     //splitting by ':' - unix-like systems, ';' - Windows systems
-    private String getCorrectSeparator(){
+    private String getSystemSeparator(){
         String systemOS = System.getProperty("os.name").toLowerCase();
         return systemOS.contains("win")
                 ? ";"
@@ -97,22 +101,32 @@ public class ShellController {
         System.out.println(this.currentDirectory);
     }
 
-    // change directory
-    public void cd(String input){
-        //considering an abs path being passed
+    // change directory method
+    public void cd(String input) {
         String pathReceived = input.split(" ")[1].trim();
+
+        // dealing with 'cd ~' to switch to home directory
+        if (pathReceived.equals("~")) {
+            pathReceived = System.getProperty("user.home");
+        }
 
         // crates a new path from the path received
         Path formattedPath = Path.of(pathReceived);
 
+        //when path isn't absolute, has './' or '../' we need to resolve them
+        if(!formattedPath.isAbsolute()){
+            formattedPath = Path.of(currentDirectory).resolve(formattedPath);
+        }
+
+        formattedPath = formattedPath.normalize();
+
         // if is not a directory log the error
-        if(!Files.isDirectory(formattedPath)){
-            System.out.print("cd: " + pathReceived + ": No such file or directory\n");
-        }else{
-            // update the current directory of the controller
-            currentDirectory = formattedPath.toString();
+        if (!Files.isDirectory(formattedPath)) {
+                System.out.print("cd: " + pathReceived + ": No such file or directory\n");
+        } else {
+                // update the current directory of the controller
+                this.currentDirectory = formattedPath.normalize().toString();
         }
 
     }
-
 }
